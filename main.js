@@ -7,20 +7,12 @@ if (sessionStorage.reservations) {
 const formInputs = document.querySelectorAll('.formInput'); //devuelve un nodelist
 const formInputs2 = document.getElementsByClassName('formInput'); //devuelve un html collection
 const reservationDiv = document.getElementById('reservationInfo')
-const sendBtn = document.getElementById('sendButton');
-const EMAIL_INPUT = document.getElementById('email');
 const NAME = document.getElementById('firstName');
-let firstName = document.getElementById('firstName').value;
-let lastName = document.getElementById('lastName').value;
-let email = document.getElementById('email').value;
-let checkIn = document.getElementById('checkIn').value;
-let checkOut = document.getElementById('checkOut').value;
-let room = document.getElementById('room').value;
-let guests = parseInt(document.getElementById('guests').value);
-let nights = parseInt(document.getElementById('nights').value);
+
 let reservationId = 0;
 let objReservation;
 let reservationsJSON;
+let reservationsArray = [];
 
 //constructor de clase
 
@@ -31,38 +23,51 @@ class reservation {
         this.lastName = lastName,
         this.email = email,
         this.checkInDate = checkInDate,
-        this.checkInDate = checkOutDate,
+        this.checkOutDate = checkOutDate,
         this.room = room,
         this.guests = guests
+        this.price = reservationCost();
+
     }
 }
 // reservation1 = new reservation (10, 'ema', 'calle', 'emacalle@hotmail.com', 'jueves', 'viernes', 'blue-room', '2 guests');
+
 //eventListeners***************************************
-EMAIL_INPUT.addEventListener('blur', emailValidate);
-sendBtn.addEventListener('click', renderInfo);
+$('#email').blur(emailValidate);
+$('#sendButton').click(renderInfo);
 //eventListener para caputurar ENTER en input: name
-NAME.addEventListener('keydown', eventLog);
+// $('firstName').keydown(eventLog);
 //captura el evento cuando se presiona enter en el input: name
 function eventLog(event) {
     console.log(event);
     if (event.keyCode == 13) {
-        alert ('presiono ENTER');
-    }
-}
+        console.log('presiono ENTER');
+    };
+};
 
 //functions********************************************
 //construir un objeto a partir de los datos del formulario
-function newReservation (reservationId, firstName, lastName, email, checkInDate, checkOutDate, room, guests) {
-    objReservation = new reservation (reservationId, firstName, lastName, email, checkInDate, checkOutDate, room, guests);
-}
+// function newReservation (reservationId, firstName, lastName, email, checkInDate, checkOutDate, room, guests) {
+//     objReservation = new reservation (reservationId, firstName, lastName, email, checkInDate, checkOutDate, room, guests);
+// }
 function renderInfo(event) {
+    let firstName = document.getElementById('firstName').value;
+    let lastName = document.getElementById('lastName').value;
+    let email = document.getElementById('email').value;
+    let checkIn = document.getElementById('checkIn').value;
+    let checkOut = document.getElementById('checkOut').value;
+    let room = document.getElementById('room').value;
+    let guests = parseInt(document.getElementById('guests').value);
+    let nights = parseInt(document.getElementById('nights').value);
     removeAllChildNodes(reservationDiv)
     for (input of formInputs) {
         renderFormInput(input);
     };
     reservationCost();
     renderPrice(reservationCost());
-    newReservation(reservationId, firstName, lastName, email, checkIn, checkOut, room, guests);
+
+    objReservation = new reservation (reservationId, firstName, lastName, email, checkIn, checkOut, room, guests);
+    // newReservation(reservationId, firstName, lastName, email, checkIn, checkOut, room, guests);
     // //muestra cual evento se esta disparando
     // console.log(event);
     // //muestra desde donde se disparo el evento
@@ -70,6 +75,7 @@ function renderInfo(event) {
     reservationId += 1;
     reservationsJSON = JSON.stringify(objReservation);
     sessionStorage.setItem('reservations', reservationsJSON);
+    // reservationsArray.push(objReservation);
 };
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
@@ -82,9 +88,13 @@ function renderFormInput(inputField) {
     reservationDiv.appendChild(item);
 }
 function renderPrice(price) {
-    const ITEM = document.createElement('p');
-    ITEM.textContent = `Costo de la estadía USD${price}`;
-    reservationDiv.appendChild(ITEM);
+    // const ITEM = document.createElement('p');
+    // ITEM.textContent = `Costo de la estadía USD${price}`;
+    // reservationDiv.appendChild(ITEM);
+
+
+    //Parece que no funcionan los string literals con Jquery
+    $('#reservationInfo').append(`<p> Costo de la estadía USD${price} </p>`);
 }
 function emailValidate() {
     console.log(event);
@@ -129,37 +139,4 @@ function reservationCost() {
 };
 
 $(window).on('load', () => console.log('jquery works'));
-
-
-        // function renderInfo() {
-        //     let name  = document.createElement('p');
-        //     name.textContent = document.getElementById('firstName').value;
-        //     reservationDiv.appendChild(name);
-        // }
-
-        // let amenities = ["full-size bed", "desk", "AC-adaptors", "heating", "hangers", "desk", "chair", "ensuite bathroom", "Air-Con"];
-        // let email = prompt("Direccion de correo electronico", "  eMAcaLLE@HOtmaIl.com   ");
-        // let roomPrompt = prompt('Elija una habitacion, green o blue');
-        // let roomChoice = cleanString(roomPrompt);
-        // let amenitiesMsg = amenities.join(', ');
-
-        // if (roomChoice == 'green') {
-        //     let slicedAmenities = amenities.slice(0,6);
-        //     amenitiesMsg = slicedAmenities.join(', ');
-        // }
-
-        // function cleanString (string) {
-        //     let lowerCased = string.toLowerCase();
-        //     let trimmed = lowerCased.trim();
-        //     return trimmed;
-        // }
-
-        // if (roomChoice == 'blue') {
-        //     alert(`sus amenities son los siguientes: ${amenitiesMsg}`);
-        // } else if (roomChoice == 'green') {
-        //     alert (`sus amenities son los siguientes: ${amenitiesMsg}`)
-        // }
-
-
-        // emailValidate(cleanString(email));
 
