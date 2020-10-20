@@ -14,6 +14,7 @@ let objReservation;
 let reservationsJSON;
 let reservationsArray = [];
 
+
 //constructor de clase
 
 class reservation {
@@ -75,7 +76,7 @@ function renderInfo(event) {
     reservationId += 1;
     reservationsJSON = JSON.stringify(objReservation);
     sessionStorage.setItem('reservations', reservationsJSON);
-    // reservationsArray.push(objReservation);
+    reservationsArray.push(objReservation);
 };
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
